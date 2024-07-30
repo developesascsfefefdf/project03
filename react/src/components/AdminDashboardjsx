@@ -1,0 +1,53 @@
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchUsers, deleteUser } from '../features/authSlice';
+import { useHistory } from 'react-router-dom';
+
+const AdminDashboard = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const users = useSelector(state => state.admin.users);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
+  const handleDelete = (userId) => {
+    dispatch(deleteUser(userId));
+  };
+
+  const handleEdit = (userId) => {
+    history.push(`/admin/edit-user/${userId}`);
+  };
+
+  return (
+    <div>
+      <h1>Admin Dashboard</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map(user => (
+            <tr key={user.id}>
+              <td>{user.email}</td>
+              <td>{user.name}</td>
+              <td>{user.user_type}</td>
+              <td>
+                <button onClick={() => handleEdit(user.id)}>Edit</button>
+                <button onClick={() => handleDelete(user.id)}>Delete</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default AdminDashboard;
